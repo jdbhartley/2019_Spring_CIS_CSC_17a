@@ -35,13 +35,15 @@ const string SAVEFILE = "save.dat";
 //Card class, stores values for our card.
 
 //Holds player name and money, used for saving binary file.
-struct player {
+struct player 
+{
     char name[MAXNMSZ];
     float money;
 };
 
 template <typename T>
-void AddMoney(T amt, player& plyr) {
+void AddMoney(T amt, player& plyr) 
+{
     plyr.money += amt;
 }
 
@@ -58,15 +60,20 @@ void SaveGame(string, player);
 //Clears the console. works on unix and windows 10+
 void ClearConsole();
 
+//Prints ASCII Art title
+void PrintTitle();
+
 //Classes
 //This class is a virtual class for inheritance
 //requires other classes to implement a print function.
-class Printable {
+class Printable 
+{
 public:
     virtual void Print() = 0;
 };
 
-class Card : public Printable {
+class Card : public Printable 
+{
 private:
     char suit;
     char val;
@@ -78,7 +85,8 @@ private:
         //This switch checks value and suit and converts it 
         //into a string description of the card.
         string strSuit, strVal;
-        switch (suit) {
+        switch (suit) 
+        {
             case 0:
                 strSuit = "Hearts";
                 asciiSuit = "♥";
@@ -96,7 +104,8 @@ private:
                 asciiSuit = "◆";
                 break;
         }
-        switch (val) {
+        switch (val) 
+        {
             case 11:
                 strVal = "Jack";
                 asciiVal = "J";
@@ -124,7 +133,8 @@ private:
 public:
     //This sets the value of the card
 
-    void SetCard(char vl, char st) {
+    void SetCard(char vl, char st) 
+    {
         val = vl;
         suit = st;
 
@@ -132,30 +142,38 @@ public:
         setDesc();
     }
 
-    char GetVal() {
+    //Returns hand value
+    char GetVal() 
+    {
         return val;
     }
     
-    string GetASCIISuit() {
+    //returns suit in ASCII
+    string GetASCIISuit() 
+    {
         return asciiSuit;
     }
     
-    string GetASCIIVal() {
+    //returns value in ASCII
+    string GetASCIIVal() 
+    {
         return asciiVal;
     }
 
     //Prints card description to the screen.
-
-    void Print() {
+    void Print() 
+    {
         cout << desc << endl;
     }
     
-    void PrintASCII() {
+    void PrintASCII() 
+    {
         //Stores value in string format
         string strVal;
         
         //Check val and assign proper character.
-        switch (val) {
+        switch (val) 
+        {
             case 11:
                 strVal = "J";
                 break;
@@ -174,19 +192,41 @@ public:
         }
         
         //Print out the card ASCII art.
+        
+        //Top portion
         cout << " ____ " << endl;
-        cout << "|" << strVal; // << "   |" << endl;
-        val == 10 ? cout << "  |" << endl : cout << "   |" << endl;
-        cout << "| " << asciiSuit << " |" << endl;
+        
+        //card value
+        cout << "|" 
+                << strVal;
+        
+        //ternary to check spacing on double digits
+        val == 10 ? cout 
+                << "  |" 
+                << endl : cout 
+                << "   |" 
+                << endl;
+        
+        //Print out the suit
+        cout << "| " 
+                << asciiSuit 
+                << " |" 
+                << endl;
+        
+        //Ternary for spacing
         val == 10 ? cout << "|__" : cout << "|___"; 
+        
+        //Finally print out value again
         cout << strVal << "|" << endl;
     }
 };
 
 //Our deck class. holds an array of cards.
 
-class Deck : public Printable {
+class Deck : public Printable 
+{
 private:
+    
     Card cards[DECKSIZE];
     int nDrawn = -1;
 
@@ -206,7 +246,8 @@ public:
 
     //Loops through cards and prints to the screen.
 
-    void Print() {
+    void Print() 
+    {
         for (char i = 0; i < DECKSIZE; i++) {
             cards[i].Print();
         }
@@ -214,13 +255,15 @@ public:
 
     //Uses Algorithm to shuffle deck
 
-    void Shuffle() {
+    void Shuffle() 
+    {
         random_shuffle(cards, cards + DECKSIZE);
     }
     
     //Returns a card from the deck, keeps track of total
     //Number of drawn cards.
-    Card Draw() {
+    Card Draw() 
+    {
         if (nDrawn < DECKSIZE) {
             nDrawn++;
             return cards[nDrawn];
@@ -233,24 +276,28 @@ public:
         }
     }
     
-    void Reset() {
+    void Reset() 
+    {
         //Set number of drawn to -1 then shuffle the deck.
         nDrawn = -1;
         Shuffle();
     }
 };
 
-class Hand : public Printable {
+class Hand : public Printable 
+{
 private:
     int numCrds = 0;
     int val = 0;
     Card* cards;
 
-    void CalcVal() {
+    void CalcVal() 
+    {
         int sum = 0;
 
         //Loop through our cards and get the value of the cards.
-        for (int i = 0; i < numCrds; i++) {
+        for (int i = 0; i < numCrds; i++) 
+        {
             cards[i].GetVal() > 10 ? sum += 10 : sum += cards[i].GetVal();
         }
 
@@ -258,20 +305,20 @@ private:
     }
 
 public:
-    
-    //~Hand() {
-    //    delete[] cards;
-    //}
 
-    void AddCard(Card crd) {
+    void AddCard(Card crd) 
+    {
         //Check if there are cards in hand
-        if (numCrds == 0) {
+        if (numCrds == 0) 
+        {
             //If theres no cards in hand make our dynamic array 1
             //And add the supplied card to the hand
             cards = new Card[1];
             cards[0] = crd;
             numCrds++;
-        } else {
+        } 
+        else 
+        {
             //Increment number of cards held and re-create cards array
             //with the new value
             numCrds++;
@@ -281,7 +328,8 @@ public:
 
             //Loop through ignoring the last index and add the old cards to the temp
             //array
-            for (int i = 0; i < numCrds - 1; i++) {
+            for (int i = 0; i < numCrds - 1; i++) 
+            {
                 tmpHnd[i] = cards[i];
             }
 
@@ -295,7 +343,8 @@ public:
             cards = new Card[numCrds];
 
             //copy tmpHand to our main array
-            for (int i = 0; i < numCrds; i++) {
+            for (int i = 0; i < numCrds; i++) 
+            {
                 cards[i] = tmpHnd[i];
             }
 
@@ -308,40 +357,48 @@ public:
 
     //Returns our hand value.
 
-    int GetVal() {
+    int GetVal() 
+    {
         return val;
     }
 
     //Prints out the entirety of our hand
 
-    void Print() {
-        for (int i = 0; i < numCrds; i++) {
+    void Print() 
+    {
+        for (int i = 0; i < numCrds; i++) 
+        {
             cards[i].Print();
         }
     }
 
-    void PrintASCII() {
+    void PrintASCII() 
+    {
         //Print out the card ASCII art.
-        for (int i = 0; i < numCrds; i++) {
+        for (int i = 0; i < numCrds; i++) 
+        {
            cout << " ____ ";
            cout << "      ";
         }
         cout << endl;
         
-        for (int i = 0; i < numCrds; i++) {
+        for (int i = 0; i < numCrds; i++) 
+        {
             cout << "|" << cards[i].GetASCIIVal();
             cards[i].GetVal() == 10 ? cout << "  |" : cout << "   |";
             cout << "      ";
         }
         cout << endl;
         
-        for (int i = 0; i < numCrds; i++) {
+        for (int i = 0; i < numCrds; i++) 
+        {
            cout << "| " << cards[i].GetASCIISuit() << " |";
            cout << "      ";
         }
         cout << endl;
         
-        for (int i = 0; i < numCrds; i++) {
+        for (int i = 0; i < numCrds; i++) 
+        {
             cards[i].GetVal() == 10 ? cout << "|__" : cout << "|___";
             cout << cards[i].GetASCIIVal() << "|";
             cout << "      ";
@@ -349,7 +406,8 @@ public:
         cout << endl;
     }
     
-    void Reset() {
+    void Reset() 
+    {
         numCrds = 0;
         delete[] cards;
     }
@@ -357,7 +415,8 @@ public:
 
 
 //Main Function
-int main(int argc, char** argv) {
+int main(int argc, char** argv) 
+{
     //Initialize deck
     Deck deck;
     
@@ -389,8 +448,11 @@ int main(int argc, char** argv) {
     srand(time(NULL));
 
     //Intro
+    //Print the title
+    PrintTitle();
+    
+    //Credits
     cout << "*******************************" << endl;
-    cout << "****       Black Jack      ****" << endl;
     cout << "****     The Card Game     ****" << endl;
     cout << "****          By           ****" << endl;
     cout << "****     James Hartley     ****" << endl;
@@ -398,31 +460,28 @@ int main(int argc, char** argv) {
     cout << "         -------------         " << endl;
 
     //Display Menu
-    while (menuSel != 'E') {
-    cout << setfill('.');
-    cout << "P" << setw(30) << "Play" << endl;
-    cout << "E" << setw(30) << "Exit" << endl;
-    cout << "T" << setw(30) << "Test" << endl;
-    cout << "Please input a selection..." << endl;
+    while (menuSel != 'E') 
+    {
+        cout << setfill('.');
+        cout << "P" << setw(30) << "Play" << endl;
+        cout << "E" << setw(30) << "Exit" << endl;
+        cout << "Please input a selection..." << endl;
     
     cin >> menuSel;
     //Check menu selection
-    switch (toupper(menuSel)) {
-        case 'T':
-        {
-            cout << plyr.money;
-            AddMoney(100, plyr);
-            cout << plyr.money;
-            break;
-        }
+    switch (toupper(menuSel)) 
+    {
         case 'P':
             play = true;
             cout << fixed << setprecision(2);
             //Check if we have a valid save file
-            if (CheckForSave(SAVEFILE)) {
+            if (CheckForSave(SAVEFILE)) 
+            {
                 plyr = LoadGame(SAVEFILE, plyr);
                 cout << "Welcome Back " << plyr.name << " you have " << plyr.money << " dollars" << endl;
-            } else {
+            } 
+            else 
+            {
                 //Get player name and create save file.
                 cout << "Please enter your name: ";
                 cin >> plyr.name;
@@ -431,7 +490,8 @@ int main(int argc, char** argv) {
                 SaveGame(SAVEFILE, plyr);
             }
 
-            while (play) {
+            while (play) 
+            {
                 //Play the game
                 cout << "You have $" << plyr.money << endl;
                 cout << "Please enter your bet: ";
@@ -447,21 +507,30 @@ int main(int argc, char** argv) {
                 bnkrHnd.AddCard(deck.Draw());
 
                 //Display player hand
-                cout << "Player Hand: " << endl;
+                cout << "Player Hand: " 
+                        << plyrHnd.GetVal() 
+                        << endl;
+                
+                //Print cards as ASCII
                 plyrHnd.PrintASCII();
                 
                 //Space it out
                 cout << endl << endl;
                 
                 //Display banker hand
-                cout << "Banker Hand: " << endl;
+                cout << "Banker Hand: " 
+                        << bnkrHnd.GetVal() 
+                        << endl;
+                
+                //Print cards as ASCII
                 bnkrHnd.PrintASCII();
 
                 //Main game loop, keep going till someone busts or hits 21
                 while (plyrHnd.GetVal() < 21 && bnkrHnd.GetVal() < 21 && !bnkrSty) {
                     
                     //If player is not staying ask if they would like to hit or stay
-                    if (!plyrSty) {
+                    if (!plyrSty) 
+                    {
                         cout << "Enter H to hit or S to stay" << endl;
                         cin >> menuSel;
                     }
@@ -473,13 +542,20 @@ int main(int argc, char** argv) {
                         //If we are hitting, draw another card
                         plyrHnd.AddCard(deck.Draw());
                         
-                        //Display the players hand
-                        cout << plyr.name << "'s Hand" << endl;
-                        plyrHnd.Print();
-                    } 
-                    //Player picked stay
+                        //Display player hand
+                        cout << "Player Hand: " 
+                        << plyrHnd.GetVal() 
+                        << endl;
+                
+                        //Print cards as ASCII
+                        plyrHnd.PrintASCII();
+                        
+                        //Space it out
+                        cout << endl << endl;
+                    }
                     else 
                     {
+                        //Player is staying
                         plyrSty = true;
                         
                         //Perform banker AI. if were under 16 value then
@@ -487,9 +563,16 @@ int main(int argc, char** argv) {
                         if (bnkrHnd.GetVal() < 16) {
                             bnkrHnd.AddCard(deck.Draw());
                             
-                            //Display the bankers hand
-                            cout << "Banker's Hand:" << endl;
-                            bnkrHnd.Print();
+                            //Display banker hand
+                        cout << "Banker Hand: " 
+                        << bnkrHnd.GetVal() 
+                        << endl;
+                
+                        //Print cards as ASCII
+                        bnkrHnd.PrintASCII();
+                        
+                        //Space it out
+                        cout << endl << endl;
                         } 
                         else 
                         {
@@ -516,11 +599,29 @@ int main(int argc, char** argv) {
                 } 
                 else if (plyrHnd.GetVal() > 21) 
                 {
+                    //Display banker hand
+                    cout << "Banker Hand: " 
+                        << bnkrHnd.GetVal() 
+                        << endl;
+                
+                //Print cards as ASCII
+                bnkrHnd.PrintASCII();
+                
                     //Player busts
-                    cout << endl << "Player BUST" << endl;
+                    cout << endl 
+                            << "Player BUST" 
+                            << endl;
                 }
                 else if (bnkrHnd.GetVal() > 21) 
                 {
+                    //Display banker hand
+                    cout << "Banker Hand: " 
+                        << bnkrHnd.GetVal() 
+                        << endl;
+                
+                    //Print cards as ASCII
+                    bnkrHnd.PrintASCII();
+                
                     //Banker busts
                     cout << endl << "Banker BUST" << endl;
                     
@@ -606,21 +707,25 @@ int main(int argc, char** argv) {
             cout << "Goodbye!";
             return 0;
             break;
-    }
+        }
     }
 
     return 0;
 }
 
 //Save player struct to binary file.
-void SaveGame(string fileName, player plyr) {
+void SaveGame(string fileName, player plyr) 
+{
     fstream fileObject;
     fileObject.open(fileName, ios::out | ios::binary);
     fileObject.write(reinterpret_cast<char *> (&plyr), sizeof (player));
     fileObject.close();
 }
 
-bool CheckForSave(string fileName) {
+//Checks for save using data file
+//returns true if a save exists
+bool CheckForSave(string fileName) 
+{
     ifstream myFile(fileName);
     if (myFile.fail()) {
         //File does not exist code here
@@ -630,7 +735,9 @@ bool CheckForSave(string fileName) {
     }
 }
 
-player LoadGame(string fileName, player plyr) {
+//Loads the game from the data file
+player LoadGame(string fileName, player plyr) 
+{
     fstream fileObject;
     fileObject.open(fileName, ios::in | ios::binary);
     fileObject.read(reinterpret_cast<char *> (&plyr), sizeof (player));
@@ -639,8 +746,26 @@ player LoadGame(string fileName, player plyr) {
     return plyr;
 }
 
-void ClearConsole() {
+void ClearConsole() 
+{
     //Clears the console.
     printf("\033c");
+}
+
+void PrintTitle() 
+{
+    cout << "888     888                888       d8b                888    " << endl;
+    cout << "888     888                888       Y8P                888      " << endl;
+    cout << "888     888                888                          888      " << endl;
+    cout << "88888b. 888 8888b.  .d8888b888  888 8888 8888b.  .d8888b888  888 " << endl;
+    cout << "888 \"88b888    \"88bd88P\"   888 .88P \"888    \"88bd88P\"   888 .88P " << endl;
+    cout << "888  888888.d888888888     888888K   888.d888888888     888888K  " << endl;
+    cout << "888 d88P888888  888Y88b.   888 \"88b  888888  888Y88b.   888 \"88b " << endl;
+    cout << "88888P\" 888\"Y888888 \"Y8888P888  888  888\"Y888888 \"Y8888P888  888 " << endl;
+    cout << "                                     888                         " << endl;
+    cout << "                                    d88P                         " << endl;
+    cout << "                                  888P\"                          " << endl;
+    cout << endl;
+    cout << endl;
 }
 
